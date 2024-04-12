@@ -3,8 +3,8 @@ package jpabook.jpashop.service;
 import java.util.List;
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.repository.MemberRepository;
+import jpabook.jpashop.repository.MemberRepositoryOld;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor // 테스트코드 만들때 편하려고 쓰는건가?
 public class MemberService {
 
+	private final MemberRepositoryOld memberRepositoryOld;
 	private final MemberRepository memberRepository;
 
 	//회원가입
@@ -20,7 +21,7 @@ public class MemberService {
 	public Long join(Member member) {
 
 		validateDuplicateMember(member); //중복 회원 검증
-		memberRepository.save(member);
+		memberRepositoryOld.save(member);
 		return member.getId();
 	}
 
@@ -34,17 +35,17 @@ public class MemberService {
 
 	//회원 전체 조회
 	public List<Member> findMembers(){
-		return memberRepository.findAll();
+		return memberRepositoryOld.findAll();
 	}
 	//회원 조회
 	public Member findOne(Long memberId){
-		return memberRepository.findOne(memberId);
+		return memberRepository.findById(memberId).get();
 	}
 
 	@Transactional
 	public void update(Long id, String name) {
 
-		Member member = memberRepository.findOne(id);
+		Member member = memberRepositoryOld.findOne(id);
 		member.setName(name);
 
 	}
